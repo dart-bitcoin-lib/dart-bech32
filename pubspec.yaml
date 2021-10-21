@@ -1,6 +1,6 @@
 name: dart_bech32
 description: A BIP173 / BIP350 compatible Bech32/Bech32m encoding/decoding library.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/dart-bitcoin-lib/dart-bech32
 repository: https://github.com/dart-bitcoin-lib/dart-bech32
 
