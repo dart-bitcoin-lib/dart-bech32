@@ -6,6 +6,9 @@ import 'package:dart_bech32/src/converter/bech32_encoder.dart';
 import 'package:dart_bech32/src/enum.dart';
 import 'package:dart_bech32/src/models.dart';
 
+export 'enum.dart' show EncodingEnum;
+export 'models.dart' show Encoded, Decoded;
+
 /// The canonical instance of [Bech32] for bech32.
 const bech32 = Bech32._();
 
