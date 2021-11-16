@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 
 import 'fixtures/fixtures.dart';
 
-void testValidFixture(Fixture f, lib.Bech32 bech32) {
+void testValidFixture(Fixture f, lib.Bech32Codec bech32) {
   if (f.hex != null) {
     test('fromWords/toWords ${f.hex}', () {
       Uint8List? words;
@@ -28,10 +28,8 @@ void testValidFixture(Fixture f, lib.Bech32 bech32) {
   }
   test('encode ${f.prefix} ${f.hex ?? f.words}', () {
     expect(
-        bech32
-            .encode(Decoded(
-                prefix: f.prefix!, words: f.words!, limit: f.limit ?? 90))
-            .data,
+        bech32.encode(
+            Decoded(prefix: f.prefix!, words: f.words!, limit: f.limit ?? 90)),
         equals(f.string!.toLowerCase()));
   });
   test('decode ${f.string}', () {
@@ -39,8 +37,7 @@ void testValidFixture(Fixture f, lib.Bech32 bech32) {
       prefix: f.prefix!.toLowerCase(),
       words: f.words!,
     );
-    expect(bech32.decode(Encoded(data: f.string!, limit: f.limit ?? 90)),
-        equals(expected));
+    expect(bech32.decode(f.string!, f.limit ?? 90), equals(expected));
   });
   test('fails for ${f.string} with 1 bit flipped', () {
     final buffer = utf8.encode(f.string!);
@@ -49,7 +46,7 @@ void testValidFixture(Fixture f, lib.Bech32 bech32) {
     final str = utf8.decode(buffer);
     String errMsg = 'No-Error';
     try {
-      bech32.decode(Encoded(data: str, limit: f.limit ?? 90));
+      bech32.decode(str, f.limit ?? 90);
     } catch (e) {
       errMsg = e.toString();
     }
@@ -61,7 +58,7 @@ void testValidFixture(Fixture f, lib.Bech32 bech32) {
   test('fails for ${f.string} with wrong encoding', () {
     String errMsg = 'No-Error';
     try {
-      wrongBech32.decode(Encoded(data: f.string!, limit: f.limit ?? 90));
+      wrongBech32.decode(f.string!, f.limit ?? 90);
     } catch (e) {
       errMsg = e.toString();
     }
@@ -69,7 +66,7 @@ void testValidFixture(Fixture f, lib.Bech32 bech32) {
   });
 }
 
-void testInvalidFixture(Fixture f, lib.Bech32 bech32) {
+void testInvalidFixture(Fixture f, lib.Bech32Codec bech32) {
   if (f.prefix != null && f.words != null) {
     test('encode fails with (${f.exception})', () {
       String errMsg = 'No-Error';
@@ -89,7 +86,7 @@ void testInvalidFixture(Fixture f, lib.Bech32 bech32) {
     test('decode fails for $str (${f.exception})', () {
       String errMsg = 'No-Error';
       try {
-        bech32.decode(Encoded(data: str, limit: f.limit ?? 90));
+        bech32.decode(str, f.limit ?? 90);
       } catch (e) {
         errMsg = e.toString();
       }

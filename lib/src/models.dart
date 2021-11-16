@@ -25,24 +25,3 @@ class Decoded {
   @override
   int get hashCode => Object.hash(prefix, words, limit);
 }
-
-/// Encoded Output Model
-class Encoded {
-  String data;
-  int limit;
-
-  Encoded({required this.data, this.limit = 90});
-
-  @override
-  String toString() {
-    return data;
-  }
-
-  @override
-  bool operator ==(covariant Encoded other) {
-    return data == other.data && limit == other.limit;
-  }
-
-  @override
-  int get hashCode => Object.hash(data, limit);
-}

@@ -10,34 +10,29 @@ const bech32Decoder = Bech32Decoder._();
 const bech32mDecoder = Bech32Decoder._(EncodingEnum.bech32m);
 
 /// Bec32 Decoder
-class Bech32Decoder extends ConverterAbstract<Encoded, Decoded> {
+class Bech32Decoder extends ConverterAbstract<String, Decoded> {
   const Bech32Decoder._([EncodingEnum encodingConst = EncodingEnum.bech32])
       : super(encodingConst);
 
   @override
-  Decoded convert(Encoded input) {
-    return _decode(input.data, input.limit);
-  }
-
-  /// Decode
-  Decoded _decode(String str, [int limit = 90]) {
-    if (str.length < 8) throw Exception('$str too short');
-    if (str.length > limit) throw Exception('Exceeds length limit');
+  Decoded convert(String input, [int limit = 90]) {
+    if (input.length < 8) throw Exception('$input too short');
+    if (input.length > limit) throw Exception('Exceeds length limit');
 
     // don't allow mixed case
-    final lowered = str.toLowerCase();
-    final uppered = str.toUpperCase();
-    if (str != lowered && str != uppered) {
-      throw Exception('Mixed-case string $str');
+    final lowered = input.toLowerCase();
+    final uppered = input.toUpperCase();
+    if (input != lowered && input != uppered) {
+      throw Exception('Mixed-case string $input');
     }
-    str = lowered;
+    input = lowered;
 
-    final split = str.lastIndexOf('1');
-    if (split == -1) throw Exception('No separator character for $str');
-    if (split == 0) throw Exception('Missing prefix for $str');
+    final split = input.lastIndexOf('1');
+    if (split == -1) throw Exception('No separator character for $input');
+    if (split == 0) throw Exception('Missing prefix for $input');
 
-    final prefix = str.substring(0, split);
-    final wordChars = str.substring(split + 1);
+    final prefix = input.substring(0, split);
+    final wordChars = input.substring(split + 1);
     if (wordChars.length < 6) throw Exception('Data too short');
 
     int chk = prefixChk(prefix);
@@ -55,7 +50,7 @@ class Bech32Decoder extends ConverterAbstract<Encoded, Decoded> {
     }
 
     if (chk != (encodingConst == EncodingEnum.bech32 ? 1 : 0x2bc830a3)) {
-      throw Exception('Invalid checksum for $str');
+      throw Exception('Invalid checksum for $input');
     }
     return Decoded(prefix: prefix, words: Uint8List.fromList(words));
   }

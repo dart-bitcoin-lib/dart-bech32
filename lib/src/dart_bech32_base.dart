@@ -7,19 +7,19 @@ import 'package:dart_bech32/src/enum.dart';
 import 'package:dart_bech32/src/models.dart';
 
 export 'enum.dart' show EncodingEnum;
-export 'models.dart' show Encoded, Decoded;
+export 'models.dart' show Decoded;
 
-/// The canonical instance of [Bech32] for bech32.
-const bech32 = Bech32._();
+/// The canonical instance of [Bech32Codec] for bech32.
+const bech32 = Bech32Codec._();
 
-/// The canonical instance of [Bech32] for bech32m.
-const bech32m = Bech32._(EncodingEnum.bech32m);
+/// The canonical instance of [Bech32Codec] for bech32m.
+const bech32m = Bech32Codec._(EncodingEnum.bech32m);
 
 /// A BIP173/BIP350 compatible Bech32/Bech32m encoding/decoding package.
-class Bech32 extends Codec<Decoded, Encoded> {
+class Bech32Codec extends Codec<Decoded, String> {
   final EncodingEnum encodingConst;
 
-  const Bech32._([this.encodingConst = EncodingEnum.bech32]) : super();
+  const Bech32Codec._([this.encodingConst = EncodingEnum.bech32]) : super();
 
   @override
   Bech32Decoder get decoder =>
@@ -29,14 +29,24 @@ class Bech32 extends Codec<Decoded, Encoded> {
   Bech32Encoder get encoder =>
       encodingConst == EncodingEnum.bech32 ? bech32Encoder : bech32mEncoder;
 
+  /// Decodes [encoded] data.
+  ///
+  /// The input is decoded as if by `decoder.convert`.
+  @override
+  Decoded decode(String encoded, [int limit = 90]) =>
+      decoder.convert(encoded, limit);
+
+  /// Bytes to Words
   Uint8List toWords(Uint8List bytes) {
     return _convert(data: bytes, inBits: 8, outBits: 5, pad: true);
   }
 
+  /// Words to Bytes
   Uint8List fromWords(Uint8List words) {
     return _convert(data: words, inBits: 5, outBits: 8, pad: false);
   }
 
+  /// Converter
   Uint8List _convert({
     required Uint8List data,
     required int inBits,

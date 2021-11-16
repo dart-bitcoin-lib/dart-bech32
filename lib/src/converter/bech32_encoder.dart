@@ -12,12 +12,12 @@ const Bech32Encoder bech32Encoder = Bech32Encoder._();
 const Bech32Encoder bech32mEncoder = Bech32Encoder._(EncodingEnum.bech32m);
 
 /// Bec32 Encoder
-class Bech32Encoder extends ConverterAbstract<Decoded, Encoded> {
+class Bech32Encoder extends ConverterAbstract<Decoded, String> {
   const Bech32Encoder._([EncodingEnum encodingConst = EncodingEnum.bech32])
       : super(encodingConst);
 
   @override
-  Encoded convert(Decoded input) {
+  String convert(Decoded input) {
     String prefix = input.prefix;
     Uint8List words = input.words;
 
@@ -49,6 +49,6 @@ class Bech32Encoder extends ConverterAbstract<Decoded, Encoded> {
       result += alphabet[v];
     }
 
-    return Encoded(data: result, limit: input.limit);
+    return result;
   }
 }
